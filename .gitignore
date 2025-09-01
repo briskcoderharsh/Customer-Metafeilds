@@ -1,0 +1,44 @@
+# Node.js dependencies
+/node_modules
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+/dist
+/build
+/.next
+/out
+
+# IDE / OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Coverage
+/coverage
+
+# Cache
+/.turbo
+/.cache
+/.parcel-cache
+
+# Shopify specific (if using ngrok or session storage)
+*.pem
+*.crt
+*.key
+/shopify_app/session.json
