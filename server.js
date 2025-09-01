@@ -3,15 +3,42 @@ import cors from "cors";
 import dotenv from "dotenv";
 import axios from "axios";
 
-dotenv.config();
+dotenv.config( );
 const app = express();
 
-app.use(cors({
-  origin: "https://indiauto.myshopify.com",  
+// --- START: CORRECTED CORS CONFIGURATION ---
+
+// Define the list of allowed origins
+const allowedOrigins = [
+  'https://customer-metafeilds-git-main-briskcoder.vercel.app', // Your Vercel frontend
+  'https://indiauto.myshopify.com' // The Shopify domain (good to keep )
+];
+
+// Configure the CORS middleware
+const corsOptions = {
+  origin: function (origin, callback) {
+    // The 'origin' is the URL of the frontend making the request
+    // On a 'same-origin' request, 'origin' will be undefined.
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      // If the origin is in our whitelist (or it's a same-origin request), allow it
+      callback(null, true);
+    } else {
+      // Otherwise, deny the request
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
-}));
-app.options("*", cors());
+};
+
+// Use the configured CORS options
+app.use(cors(corsOptions));
+
+// The preflight 'OPTIONS' request is handled by the cors middleware.
+// You can remove app.options("*", cors()); as it's now redundant.
+
+// --- END: CORRECTED CORS CONFIGURATION ---
+
 
 app.use(express.json());
 
@@ -19,6 +46,7 @@ const API_VERSION = process.env.API_VERSION || "2024-07";
 const SHOPIFY_ADMIN_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
 
 app.get("/api/customer", async (req, res) => {
+  // ... your route logic remains exactly the same ...
   const { shop, email } = req.query;
 
   if (!shop || !email) {
@@ -26,7 +54,7 @@ app.get("/api/customer", async (req, res) => {
   }
 
   try {
-    const searchUrl = `https://${shop}/admin/api/${API_VERSION}/customers/search.json?query=email:${encodeURIComponent(email)}`;
+    const searchUrl = `https://${shop}/admin/api/${API_VERSION}/customers/search.json?query=email:${encodeURIComponent(email )}`;
     const custResp = await axios.get(searchUrl, {
       headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN },
     });
@@ -41,7 +69,7 @@ app.get("/api/customer", async (req, res) => {
     const murl = `https://${shop}/admin/api/${API_VERSION}/customers/${customer.id}/metafields.json`;
     const metaResp = await axios.get(murl, {
       headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN },
-    });
+    } );
 
     const metafields = metaResp.data?.metafields || [];
     const mf = {};
