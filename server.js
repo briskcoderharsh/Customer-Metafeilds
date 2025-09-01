@@ -7,8 +7,6 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-
-
 app.use(express.json());
 
 const API_VERSION = process.env.API_VERSION || "2024-07";
@@ -22,7 +20,6 @@ app.get("/api/customer", async (req, res) => {
   }
 
   try {
-
     const searchUrl = `https://${shop}/admin/api/${API_VERSION}/customers/search.json?query=email:${encodeURIComponent(email)}`;
     const custResp = await axios.get(searchUrl, {
       headers: { "X-Shopify-Access-Token": SHOPIFY_ADMIN_TOKEN },
@@ -62,5 +59,11 @@ app.get("/api/customer", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+export default app;
+
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`🚀 Server running locally on port ${PORT}`));
+}
