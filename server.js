@@ -6,7 +6,13 @@ import axios from "axios";
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://indiauto.myshopify.com",  
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+app.options("*", cors());
+
 app.use(express.json());
 
 const API_VERSION = process.env.API_VERSION || "2024-07";
@@ -58,7 +64,6 @@ app.get("/api/customer", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
 
 export default app;
 
